@@ -1,8 +1,7 @@
-CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
 CREATE TABLE IF NOT EXISTS swap_ticks (
       block_num           BIGINT NOT NULL,
-      time timestamptz NOT NULL,
+      time  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
       tx_id varchar(255) NOT NULL,
       act_type varchar(255) NOT NULL,
       owner varchar(30) NOT NULL,
@@ -37,7 +36,7 @@ CREATE TABLE IF NOT EXISTS swap_ticks (
 
 SELECT create_hypertable('swap_ticks', 'time', if_not_exists => TRUE);
 
-CREATE INDEX swap_ticks_i01 ON swap_ticks (block_num);
+CREATE INDEX IF NOT EXISTS swap_ticks_i01 ON swap_ticks (block_num);
 
 
 
