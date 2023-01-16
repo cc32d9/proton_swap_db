@@ -29,11 +29,6 @@ sub swaphistory_prepare
                       ' pool1_swap_amount, pool2_swap_amount, pool1_liq_amount, pool2_liq_amount) ' .
                       'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
     
-    $main::db->{'ins_trade_executions'} =
-        $dbh->prepare('INSERT INTO trade_executions (block_num, time, tx_id, trade_id, bid_user, bid_user_order_id, ' .
-                      ' ask_user, ask_user_order_id, bid_amount, ask_amount, price) ' .
-                      'VALUES (?,?,?,?,?,?,?,?,?,?,?)');
-
     printf STDERR ("proton_swap_dbwriter.pl prepared, contract: %s\n", $swap_contract);
 }
 

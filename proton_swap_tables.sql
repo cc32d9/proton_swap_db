@@ -41,21 +41,4 @@ CREATE INDEX swap_ticks_i01 ON swap_ticks (block_num);
 
 
 
-CREATE TABLE IF NOT EXISTS trade_executions (
-      block_num           BIGINT NOT NULL,
-      time timestamptz NOT NULL,
-      tx_id varchar(255) NOT NULL,
-      trade_id integer NOT NULL,
-      bid_user VARCHAR(30) NOT NULL,
-      bid_user_order_id integer NOT NULL,
-      ask_user VARCHAR(30) NOT NULL,
-      ask_user_order_id integer NOT NULL,
-      bid_amount VARCHAR(250) NOT NULL,
-      ask_amount VARCHAR(250) NOT NULL,
-      price decimal NOT NULL
-);
-
-SELECT create_hypertable('trade_executions', 'time', if_not_exists => TRUE);
-
-CREATE INDEX trade_executions_i01 ON trade_executions (block_num);
 
