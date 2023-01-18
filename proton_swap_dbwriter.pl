@@ -53,38 +53,70 @@ sub swaphistory_trace
             elsif( $aname eq 'addliqlog' )
             {
                 $take = 1;
-                
-                ($row{'lt_amount'}, $row{'lt_symbol'}) = split(/\s+/, $data->{'lt_added'});
 
-                ($row{'add_token1_amount'}, $row{'add_token1_symbol'}) = split(/\s+/, $data->{'add_token1'});
-                ($row{'add_token2_amount'}, $row{'add_token2_symbol'}) = split(/\s+/, $data->{'add_token2'});
+                if( defined($data->{'lt_added'}) )
+                {
+                    split_asset(\%row, $data->{'lt_added'}, 'lt_amount', 'lt_symbol');
+                }
+                elsif( defined($data->{'lt'}) )
+                {
+                    split_asset(\%row, $data->{'lt'}, 'lt_amount', 'lt_symbol');
+                }
+                else
+                {
+                    $take = 0;
+                }
 
-                ($row{'add_token1_min_amount'}, $row{'add_token1_min_symbol'}) = split(/\s+/, $data->{'add_token1_min'});
-                ($row{'add_token2_min_amount'}, $row{'add_token2_min_symbol'}) = split(/\s+/, $data->{'add_token2_min'});
-                
-                $row{'memo'} = $data->{'memo'};
+                if( $take )
+                {
+                    split_asset(\%row, $data->{'add_token1'}, 'add_token1_amount', 'add_token1_symbol');
+                    split_asset(\%row, $data->{'add_token2'}, 'add_token2_amount', 'add_token2_symbol');
+                    
+                    split_asset(\%row, $data->{'add_token1_min'}, 'add_token1_min_amount', 'add_token1_min_symbol');
+                    split_asset(\%row, $data->{'add_token2_min'}, 'add_token2_min_amount', 'add_token2_min_symbol');
+                    
+                    $row{'memo'} = $data->{'memo'};
+                }
             }
             elsif( $aname eq 'liqrmvlog' )
             {
                 $take = 1;
 
-                ($row{'lt_amount'}, $row{'lt_symbol'}) = split(/\s+/, $data->{'lt_removed'});
-                $row{'lt_amount'} *= -1;
+                if( defined($data->{'lt_removed'}) )
+                {
+                    split_asset(\%row, $data->{'lt_removed'}, 'lt_amount', 'lt_symbol');
+                }
+                elsif( defined($data->{'lt'}) )
+                {
+                    split_asset(\%row, $data->{'lt'}, 'lt_amount', 'lt_symbol');
+                }
+                else
+                {
+                    $take = 0;
+                }
+                    
+                if( $take )
+                {
+                    $row{'lt_amount'} *= -1;
+                }
             }
 
             if( $take )
             {
-                ($row{'token1_amount'}, $row{'token1_symbol'}) = split(/\s+/, $data->{'token1'});
-                ($row{'token2_amount'}, $row{'token2_symbol'}) = split(/\s+/, $data->{'token2'});
-                
-                ($row{'pool1_amount'}, $row{'pool1_symbol'}) = split(/\s+/, $data->{'pool1'});
-                ($row{'pool2_amount'}, $row{'pool2_symbol'}) = split(/\s+/, $data->{'pool2'});
+                split_asset(\%row, $data->{'token1'}, 'token1_amount', 'token1_symbol');
+                split_asset(\%row, $data->{'token2'}, 'token2_amount', 'token2_symbol');
 
-                $row{'pool1_contract'} = $data->{'pool1_contract'};
-                $row{'pool2_contract'} = $data->{'pool2_contract'};
+                if( defined($data->{'pool1'}) and defined($data->{'pool2'}) )
+                {
+                    split_asset(\%row, $data->{'pool1'}, 'pool1_amount', 'pool1_symbol');
+                    split_asset(\%row, $data->{'pool2'}, 'pool2_amount', 'pool2_symbol');
 
-                $row{'pool_price'} = $row{'pool2_amount'} / $row{'pool1_amount'};
-                $row{'inverted_pool_price'} = $row{'pool1_amount'} / $row{'pool2_amount'};
+                    $row{'pool_price'} = $row{'pool2_amount'} / $row{'pool1_amount'};
+                    $row{'inverted_pool_price'} = $row{'pool1_amount'} / $row{'pool2_amount'};
+                    
+                    $row{'pool1_contract'} = $data->{'pool1_contract'};
+                    $row{'pool2_contract'} = $data->{'pool2_contract'};
+                }
 
                 $row{'pool1_swap_amount'} = 0;
                 $row{'pool2_swap_amount'} = 0;
@@ -129,6 +161,22 @@ sub swaphistory_trace
             }
         }
     }
+}
+
+
+sub split_asset
+{
+    my $row = shift;
+    my $asset = shift;
+    my $name_amount = shift;
+    my $name_symbol = shift;
+
+    if( ref($asset) eq 'HASH' )
+    {
+        $asset = $asset->{'quantity'};
+    }
+
+    ($row->{$name_amount}, $row->{$name_symbol}) = split(/\s+/, $asset);
 }
 
 
