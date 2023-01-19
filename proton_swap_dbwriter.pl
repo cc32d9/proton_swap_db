@@ -111,8 +111,16 @@ sub swaphistory_trace
                     split_asset(\%row, $data->{'pool1'}, 'pool1_amount', 'pool1_symbol');
                     split_asset(\%row, $data->{'pool2'}, 'pool2_amount', 'pool2_symbol');
 
-                    $row{'pool_price'} = $row{'pool2_amount'} / $row{'pool1_amount'};
-                    $row{'inverted_pool_price'} = $row{'pool1_amount'} / $row{'pool2_amount'};
+                    if( $row{'pool2_amount'} == 0 or $row{'pool1_amount'} == 0 )
+                    {
+                        $row{'pool_price'} = 0;
+                        $row{'inverted_pool_price'} = 0;
+                    }
+                    else
+                    {
+                        $row{'pool_price'} = $row{'pool2_amount'} / $row{'pool1_amount'};
+                        $row{'inverted_pool_price'} = $row{'pool1_amount'} / $row{'pool2_amount'};
+                    }
                     
                     $row{'pool1_contract'} = $data->{'pool1_contract'};
                     $row{'pool2_contract'} = $data->{'pool2_contract'};
