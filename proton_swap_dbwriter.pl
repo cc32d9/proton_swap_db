@@ -155,6 +155,7 @@ sub swaphistory_trace
                     $row{'pool2_liq_amount'} = $row{'token2_amount'} * -1;
                 }
 
+                $row{'seq'} = $receipt->{'global_sequence'};
                 $row{'block_num'} = $block_num;
                 $row{'time'} = $block_time;
                 $row{'tx_id'} = $trace->{'id'};
