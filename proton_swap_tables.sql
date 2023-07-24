@@ -38,8 +38,7 @@ CREATE TABLE IF NOT EXISTS swap_ticks (
 SELECT create_hypertable('swap_ticks', 'time', if_not_exists => TRUE);
 
 CREATE INDEX IF NOT EXISTS swap_ticks_i01 ON swap_ticks (block_num);
-CREATE INDEX IF NOT EXISTS swap_ticks_i02 ON swap_ticks (token1_symbol, token2_symbol, time);
-CREATE INDEX IF NOT EXISTS swap_ticks_i03 ON swap_ticks (token1_symbol, time);
+CREATE INDEX IF NOT EXISTS swap_ticks_i02 ON swap_ticks (pool1_symbol, pool2_symbol, time);
 
 
 
